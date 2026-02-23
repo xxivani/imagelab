@@ -15,6 +15,9 @@ interface PipelineState {
   setError: (error: string | null, step?: number | null) => void;
   setSelectedBlock: (type: string | null, tooltip: string | null) => void;
   reset: () => void;
+  clearImage: () => void;
+  _imageResetFn: (() => void) | null;
+  registerImageReset: (fn: () => void) => void;
 }
 
 export const usePipelineStore = create<PipelineState>((set) => ({
@@ -32,4 +35,12 @@ export const usePipelineStore = create<PipelineState>((set) => ({
   setError: (error, step = null) => set({ error, errorStep: step }),
   setSelectedBlock: (type, tooltip) => set({ selectedBlockType: type, selectedBlockTooltip: tooltip }),
   reset: () => set({ originalImage: null, imageFormat: 'png', processedImage: null, isExecuting: false, error: null, errorStep: null, selectedBlockType: null, selectedBlockTooltip: null }),
+  _imageResetFn: null as (() => void) | null,
+  registerImageReset: (fn) => set({ _imageResetFn: fn }),
+  clearImage: () => {
+    const state = usePipelineStore.getState();
+    if (state._imageResetFn) state._imageResetFn();
+    set({ originalImage: null, processedImage: null, error: null, errorStep: null });
+  },
+
 }));

@@ -38,6 +38,12 @@ function initReadImageBlock(block: Blockly.Block) {
       fileInput.click();
     });
   }
+  
+  // Register a reset callback when the image is cleared
+  usePipelineStore.getState().registerImageReset(() => {
+    const label = block.getField("filename_label");
+    if (label) label.setValue("No image");
+  });
 
   // Clean up on block disposal
   block.dispose = new Proxy(block.dispose, {
