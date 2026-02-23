@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ZoomIn, ZoomOut, Image, ImageDown } from "lucide-react";
+import { ZoomIn, ZoomOut, Image, ImageDown, Trash2 } from "lucide-react";
 import { usePipelineStore } from "../../store/pipelineStore";
 import ImageDisplay from "./ImageDisplay";
 
@@ -35,7 +35,7 @@ function ZoomControls({
 }
 
 export default function PreviewPane() {
-  const { originalImage, imageFormat, processedImage, error } = usePipelineStore();
+  const { originalImage, imageFormat, processedImage, error, clearImage } = usePipelineStore();
 
   const [originalZoom, setOriginalZoom] = useState<number | null>(null);
   const [processedZoom, setProcessedZoom] = useState<number | null>(null);
@@ -52,6 +52,15 @@ export default function PreviewPane() {
         <div className="px-3 py-1.5 border-b border-gray-200 flex items-center gap-1.5">
           <Image size={14} className="text-gray-400" />
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Original</h2>
+          {originalImage && (
+            <button
+              onClick={clearImage}
+              className="ml-auto p-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+              title="Remove image"
+            >
+              <Trash2 size={14} />
+            </button>
+          )}
         </div>
         <div className="flex-1 flex items-center justify-center p-3 bg-gray-50 overflow-auto">
           {originalImage ? (
