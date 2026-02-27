@@ -95,15 +95,29 @@ export const filteringBlocks = [
     nextStatement: null,
     style: "filtering_style",
     tooltip: "Applies morphological operation - Performs various morphological transformations based on the selected filter type. 'Open' removes small objects from the foreground, 'Close' fills small holes in the foreground, 'Gradient' highlights the edges of objects, 'Tophat' extracts small elements and details from the image, and 'Black hat' extracts small dark regions on a light background. These operations are useful for enhancing or suppressing specific features in an image."
-  },{
-    type: "filtering_sharpen",
-    message0: "Apply sharpen with strength %1",
+  },
+  {
+      type: "filtering_sharpen",
+      message0: "Apply sharpen with strength %1",
+      args0: [
+        { type: "field_number", name: "strength", value: 1.0, min: 0, max: 2, precision: 0.1 }
+      ],
+      previousStatement: null,
+      nextStatement: null,
+      style: "filtering_style",
+      tooltip: "Applies image sharpening to enhance edges and details"
+    },{
+    type: "filtering_cannyedge",
+    message0: "Canny Edge Detection %1 Threshold 1 %2 %3 Threshold 2 %4",
     args0: [
-      { type: "field_number", name: "strength", value: 1.0, min: 0, max: 2, precision: 0.1 }
+      { type: "input_dummy" },
+      { type: "field_number", name: "threshold1", value: 100, min: 0, max: 255 },
+      { type: "input_dummy" },
+      { type: "field_number", name: "threshold2", value: 200, min: 0, max: 255 }
     ],
     previousStatement: null,
     nextStatement: null,
     style: "filtering_style",
-    tooltip: "Applies image sharpening to enhance edges and details"
+    tooltip: "Applies Canny edge detection - A multi-stage algorithm that detects a wide range of edges in images. Pixels with gradient magnitude above Threshold 2 are strong edges, below Threshold 1 are discarded, and those in between are kept only if connected to a strong edge. Color images are automatically converted to grayscale."
   }
 ];

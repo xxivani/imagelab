@@ -28,6 +28,7 @@ from app.operators.filtering.erosion import Erosion
 from app.operators.filtering.morphological import Morphological
 from app.operators.filtering.pyramid_down import PyramidDown
 from app.operators.filtering.pyramid_up import PyramidUp
+from app.operators.filtering.canny_edge import CannyEdge
 from app.operators.filtering.sharpen import Sharpen
 from app.operators.geometric.affine_image import AffineImage
 from app.operators.geometric.reflect_image import ReflectImage
@@ -42,6 +43,7 @@ from app.operators.thresholding.apply_borders import ApplyBorders
 from app.operators.thresholding.apply_threshold import ApplyThreshold
 from app.operators.transformation.distance_transform import DistanceTransform
 from app.operators.transformation.laplacian import Laplacian
+
 
 OPERATOR_REGISTRY: dict[str, type[BaseOperator]] = {
     # Basic
@@ -85,6 +87,7 @@ OPERATOR_REGISTRY: dict[str, type[BaseOperator]] = {
     "filtering_erosion": Erosion,
     "filtering_dilation": Dilation,
     "filtering_morphological": Morphological,
+    "filtering_cannyedge": CannyEdge,
     # Thresholding
     "thresholding_applythreshold": ApplyThreshold,
     "thresholding_adaptivethreshold": AdaptiveThreshold,
