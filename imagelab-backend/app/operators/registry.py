@@ -25,6 +25,7 @@ from app.operators.drawing.draw_rectangle import DrawRectangle
 from app.operators.drawing.draw_text import DrawText
 from app.operators.filtering.bilateral_filter import BilateralFilter
 from app.operators.filtering.box_filter import BoxFilter
+from app.operators.filtering.canny_edge import CannyEdge
 from app.operators.filtering.contour_detection import ContourDetection
 from app.operators.filtering.dilation import Dilation
 from app.operators.filtering.erosion import Erosion
@@ -96,6 +97,7 @@ OPERATOR_REGISTRY: dict[str, type[BaseOperator]] = {
     "filtering_erosion": Erosion,
     "filtering_dilation": Dilation,
     "filtering_morphological": Morphological,
+    "filtering_cannyedge": CannyEdge,
     "filtering_gaborfilter": GaborFilter,
     "filtering_contourdetection": ContourDetection,
     # Thresholding
