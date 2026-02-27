@@ -35,6 +35,7 @@ interface CategorySectionProps {
   previews: Map<string, BlockPreview>;
   disabledTypes: Set<string>;
   defaultOpen?: boolean;
+  searchQuery?: string;
 }
 
 export default function CategorySection({
@@ -43,28 +44,42 @@ export default function CategorySection({
   previews,
   disabledTypes,
   defaultOpen,
+  searchQuery = "",
 }: CategorySectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen ?? false);
   const Icon = iconMap[category.icon];
 
+  const isSearching = searchQuery.trim().length > 0;
+  const filteredBlocks = isSearching
+    ? category.blocks.filter((b) =>
+        b.label.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : category.blocks;
+
+  const effectiveOpen = isSearching ? filteredBlocks.length > 0 : isOpen;
+
+  if (isSearching && filteredBlocks.length === 0) return null;
+
   return (
     <div className="border-b border-gray-200">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen(!effectiveOpen)}
         className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 transition-colors"
       >
-        {isOpen ? (
+        {effectiveOpen ? (
           <ChevronDown size={14} className="text-gray-400" />
         ) : (
           <ChevronRight size={14} className="text-gray-400" />
         )}
         {Icon && <Icon size={16} color={category.colour} />}
         <span className="text-sm font-medium text-gray-700">{category.name}</span>
-        <span className="ml-auto text-xs text-gray-400 font-normal">{category.blocks.length}</span>
+        <span className="ml-auto text-xs text-gray-400 font-normal">
+          {isSearching ? `${filteredBlocks.length}/${category.blocks.length}` : category.blocks.length}
+        </span>
       </button>
-      {isOpen && (
+      {effectiveOpen && (
         <div className="pb-1 pl-2">
-          {category.blocks.map((block) => (
+          {filteredBlocks.map((block) => (
             <BlockItem
               key={block.type}
               type={block.type}
