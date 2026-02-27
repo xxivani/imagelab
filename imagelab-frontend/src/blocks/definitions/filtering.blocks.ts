@@ -112,4 +112,19 @@ export const filteringBlocks = [
     style: "filtering_style",
     tooltip: "Applies image sharpening to enhance edges and details",
   },
+  {
+    type: "filtering_cannyedge",
+    message0: "Canny Edge Detection %1 Threshold 1 %2 %3 Threshold 2 %4",
+    args0: [
+      { type: "input_dummy" },
+      { type: "field_number", name: "threshold1", value: 100, min: 0, max: 255 },
+      { type: "input_dummy" },
+      { type: "field_number", name: "threshold2", value: 200, min: 0, max: 255 },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    style: "filtering_style",
+    tooltip:
+      "Applies Canny edge detection - A multi-stage algorithm that detects a wide range of edges in images. Pixels with gradient magnitude above Threshold 2 are strong edges, below Threshold 1 are discarded, and those in between are kept only if connected to a strong edge. Color images are automatically converted to grayscale.",
+  },
 ];
