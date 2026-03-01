@@ -49,6 +49,11 @@ export const imagelabTheme = Blockly.Theme.defineTheme("imagelab", {
       colourSecondary: "#26A69A",
       colourTertiary: "#009688",
     },
+    augmentation_style: {
+      colourPrimary: "#F48FB1",
+      colourSecondary: "#F06292",
+      colourTertiary: "#E91E63",
+    },
   },
   componentStyles: {
     workspaceBackgroundColour: "#F9FAFB",
