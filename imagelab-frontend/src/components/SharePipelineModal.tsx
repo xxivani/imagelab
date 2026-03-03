@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as Blockly from "blockly";
 import { X, Copy, Check, Share2, Upload } from "lucide-react";
+
+const READ_IMAGE_BLOCK_TYPE = "basic_readimage";
+const FILENAME_LABEL_FIELD = "filename_label";
 
 interface SharePipelineModalProps {
   workspace: Blockly.WorkspaceSvg | null;
@@ -16,7 +19,7 @@ function compressToCode(workspace: Blockly.WorkspaceSvg): string {
   return btoa(binary);
 }
 
-function decompressFromCode(code: string): object {
+function decompressFromCode(code: string): unknown {
   const binary = atob(code.trim());
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
@@ -30,8 +33,18 @@ export default function SharePipelineModal({ workspace, onClose }: SharePipeline
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [inputCode, setInputCode] = useState("");
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loadSuccess, setLoadSuccess] = useState(false);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
 
   const handleGenerate = () => {
     if (!workspace) return;
@@ -46,24 +59,49 @@ export default function SharePipelineModal({ workspace, onClose }: SharePipeline
 
   const handleCopy = async () => {
     if (!generatedCode) return;
-    await navigator.clipboard.writeText(generatedCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(generatedCode);
+      setCopied(true);
+      setCopyError(null);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopyError("Could not copy to clipboard. Please select and copy manually.");
+    }
   };
 
   const handleLoad = () => {
     if (!workspace || !inputCode.trim()) return;
     setLoadError(null);
     setLoadSuccess(false);
+
+    // Confirm before overwriting existing workspace
+    const existingBlocks = workspace.getAllBlocks(false);
+    if (existingBlocks.length > 0) {
+      if (!window.confirm("Loading a pipeline will replace your current workspace. Continue?"))
+        return;
+    }
+
     try {
       const state = decompressFromCode(inputCode.trim());
-      workspace.clear();
-      Blockly.serialization.workspaces.load(state, workspace);
 
-      const readImageBlocks = workspace.getBlocksByType("basic_readimage", false);
-      readImageBlocks.forEach((block) => {
-        const field = block.getField("filename_label");
-        if (field) field.setValue("No image");
+      // Save snapshot before mutating so we can restore on failure
+      const snapshot = Blockly.serialization.workspaces.save(workspace);
+      workspace.clear();
+
+      try {
+        Blockly.serialization.workspaces.load(
+          state as Parameters<typeof Blockly.serialization.workspaces.load>[0],
+          workspace,
+        );
+      } catch (loadErr) {
+        // Restore original workspace on failure
+        Blockly.serialization.workspaces.load(snapshot, workspace);
+        throw loadErr;
+      }
+
+      // Clear filename from any read image blocks
+      workspace.getBlocksByType(READ_IMAGE_BLOCK_TYPE, false).forEach((block) => {
+        block.getField(FILENAME_LABEL_FIELD)?.setValue("No image");
       });
 
       setLoadSuccess(true);
@@ -74,8 +112,18 @@ export default function SharePipelineModal({ workspace, onClose }: SharePipeline
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Share Pipeline"
+        className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
@@ -83,11 +131,13 @@ export default function SharePipelineModal({ workspace, onClose }: SharePipeline
             <h2 className="text-sm font-semibold text-gray-800">Share Pipeline</h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
             title="Close"
+            aria-label="Close"
           >
-            <X size={16} />
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
 
@@ -104,6 +154,7 @@ export default function SharePipelineModal({ workspace, onClose }: SharePipeline
             </div>
 
             <button
+              type="button"
               onClick={handleGenerate}
               disabled={!workspace}
               className="w-full py-2 px-3 rounded-lg text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -129,18 +180,21 @@ export default function SharePipelineModal({ workspace, onClose }: SharePipeline
                         className="flex-1 text-xs font-mono bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-700 truncate"
                       />
                       <button
+                        type="button"
                         onClick={handleCopy}
                         className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border border-gray-200 hover:bg-gray-50 transition-colors text-gray-600"
                         title="Copy code to clipboard"
+                        aria-label="Copy code to clipboard"
                       >
                         {copied ? (
-                          <Check size={14} className="text-green-500" />
+                          <Check size={14} className="text-green-500" aria-hidden="true" />
                         ) : (
-                          <Copy size={14} />
+                          <Copy size={14} aria-hidden="true" />
                         )}
                         {copied ? "Copied!" : "Copy"}
                       </button>
                     </div>
+                    {copyError && <p className="text-xs text-red-500">{copyError}</p>}
                     <p className="text-[11px] text-gray-400">
                       Anyone with this code can load your pipeline.
                     </p>
@@ -180,12 +234,13 @@ export default function SharePipelineModal({ workspace, onClose }: SharePipeline
             {loadSuccess && <p className="text-xs text-green-600">Pipeline loaded successfully!</p>}
 
             <button
+              type="button"
               onClick={handleLoad}
               disabled={!inputCode.trim() || !workspace}
               className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Load pipeline from code"
             >
-              <Upload size={14} />
+              <Upload size={14} aria-hidden="true" />
               Load Pipeline
             </button>
           </div>

@@ -132,6 +132,8 @@ export default function Toolbar({ workspace }: ToolbarProps) {
           <Share2 size={18} />
         </button>
 
+        <div className={separator} />
+
         <button
           onClick={handleRun}
           disabled={isExecuting || !originalImage}
