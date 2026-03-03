@@ -172,9 +172,9 @@ export const filteringBlocks = [
     message0: "Canny Edge Detection %1 Threshold 1 %2 %3 Threshold 2 %4",
     args0: [
       { type: "input_dummy" },
-      { type: "field_number", name: "threshold1", value: 100, min: 0, max: 255 },
+      { type: "field_number", name: "threshold1", value: 100, min: 0, max: 500 },
       { type: "input_dummy" },
-      { type: "field_number", name: "threshold2", value: 200, min: 0, max: 255 },
+      { type: "field_number", name: "threshold2", value: 200, min: 0, max: 500 },
     ],
     previousStatement: null,
     nextStatement: null,
