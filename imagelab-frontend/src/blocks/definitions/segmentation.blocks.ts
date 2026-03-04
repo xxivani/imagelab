@@ -17,7 +17,7 @@ export const segmentationBlocks = [
     nextStatement: null,
     style: "segmentation_style",
     tooltip:
-      "Applies watershed segmentation - A classical algorithm that treats the image like a topographic map, flooding basins from marker points to separate distinct regions. The foreground threshold (0.1–0.9) controls how confidently a region must stand out to be treated as foreground. Segment boundaries are highlighted in red. Useful for separating touching or overlapping objects in an image.",
+      "Applies watershed segmentation - A classical algorithm that treats the image like a topographic map, flooding basins from marker points to separate distinct regions. The foreground threshold (0.1–0.9) controls how confidently a region must stand out to be treated as foreground. Segment boundaries are highlighted in red. Note: assumes foreground objects are darker than the background (e.g. cells, text). For bright-on-dark images the foreground/background logic will be inverted.",
   },
   {
     type: "segmentation_kmeans",
@@ -27,14 +27,21 @@ export const segmentationBlocks = [
       { type: "input_dummy" },
       { type: "field_number", name: "k", value: 3, min: 2, max: 10 },
       { type: "input_dummy" },
-      { type: "field_number", name: "max_iter", value: 100, min: 1 },
+      { type: "field_number", name: "max_iter", value: 100, min: 1, max: 500 },
       { type: "input_dummy" },
-      { type: "field_number", name: "epsilon", value: 0.2, min: 0.01, precision: 0.01 },
+      {
+        type: "field_number",
+        name: "epsilon",
+        value: 0.2,
+        min: 0.01,
+        max: 10.0,
+        precision: 0.01,
+      },
     ],
     previousStatement: null,
     nextStatement: null,
     style: "segmentation_style",
     tooltip:
-      "Applies K-Means color segmentation - Groups pixels into K clusters based on color similarity, replacing each pixel with the average color of its cluster. K controls the number of color segments (2–10). Higher K values produce more detailed segmentation. Max iterations and epsilon control the convergence of the algorithm. Great for simplifying images and understanding dominant color regions.",
+      "Applies K-Means color segmentation - Groups pixels into K clusters based on color similarity, replacing each pixel with the average color of its cluster. K controls the number of color segments (2–10). Higher K values produce more detailed segmentation. Max iterations (1–500) and epsilon (0.01–10.0) control the convergence of the algorithm. Great for simplifying images and understanding dominant color regions.",
   },
 ];
