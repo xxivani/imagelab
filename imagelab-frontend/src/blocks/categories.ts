@@ -74,15 +74,6 @@ export const categories: CategoryInfo[] = [
     ],
   },
   {
-    name: "Segmentation",
-    icon: "Layers",
-    colour: "#4DD0E1",
-    blocks: [
-      { type: "segmentation_watershed", label: "Watershed" },
-      { type: "segmentation_kmeans", label: "K-Means" },
-    ],
-  },
-  {
     name: "Filtering",
     icon: "Filter",
     colour: "#F06292",
@@ -95,6 +86,7 @@ export const categories: CategoryInfo[] = [
       { type: "filtering_erosion", label: "Erosion" },
       { type: "filtering_dilation", label: "Dilation" },
       { type: "filtering_morphological", label: "Morphological" },
+      { type: "filtering_cannyedge", label: "Canny Edge Detection" },
     ],
   },
   {
@@ -108,6 +100,15 @@ export const categories: CategoryInfo[] = [
       { type: "border_for_all", label: "Border (All Sides)" },
       { type: "border_each_side", label: "Border (Each Side)" },
       { type: "thresholding_otsuthreshold", label: "Otsu Threshold" },
+    ],
+  },
+  {
+    name: "Segmentation",
+    icon: "Layers",
+    colour: "#26A69A",
+    blocks: [
+      { type: "segmentation_watershed", label: "Watershed" },
+      { type: "segmentation_kmeans", label: "K-Means" },
     ],
   },
   {

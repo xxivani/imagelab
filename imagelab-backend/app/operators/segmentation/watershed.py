@@ -23,9 +23,14 @@ class Watershed(BaseOperator):
         sure_bg = cv2.dilate(opening, kernel, iterations=3)
 
         dist_transform = cv2.distanceTransform(opening, cv2.DIST_L2, 5)
+
+        dist_max = dist_transform.max()
+        if dist_max == 0:
+            return image.copy()
+
         foreground_threshold = float(self.params.get("foreground_threshold", 0.5))
         foreground_threshold = max(0.1, min(0.9, foreground_threshold))
-        _, sure_fg = cv2.threshold(dist_transform, foreground_threshold * dist_transform.max(), 255, 0)
+        _, sure_fg = cv2.threshold(dist_transform, foreground_threshold * dist_max, 255, 0)
         sure_fg = np.uint8(sure_fg)
 
         unknown = cv2.subtract(sure_bg, sure_fg)
