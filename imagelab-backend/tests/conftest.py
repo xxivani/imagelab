@@ -32,3 +32,15 @@ def png_b64() -> str:
     img[:] = (100, 150, 200)
     _, buf = cv2.imencode(".png", img)
     return base64.b64encode(buf.tobytes()).decode()
+
+
+@pytest.fixture
+def color_image():
+    rng = np.random.default_rng(42)
+    return rng.integers(0, 256, (100, 100, 3), dtype=np.uint8)
+
+
+@pytest.fixture
+def grayscale_image():
+    rng = np.random.default_rng(42)
+    return rng.integers(0, 256, (100, 100), dtype=np.uint8)
