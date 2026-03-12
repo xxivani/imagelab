@@ -56,7 +56,57 @@ export const thresholdingBlocks = [
     nextStatement: null,
     style: "thresholding_style",
     tooltip:
-      "Add a border around the image. Connect a border specification block. - This block allows you to add a border around the image. You can specify the border thickness using either the 'Same border thickness on all sides' block or the 'Set border thickness for each side individually' block. This is useful for framing the image or creating a visual separation from the background.",
+      "Add a border around the image. Connect a border specification block. Choose border type: Constant (solid black), Reflect (mirror), Replicate (edge pixels repeated), or Wrap (tiled).",
+  },
+  {
+    type: "border_for_all",
+    message0: "with thickness %1 | border type %2",
+    args0: [
+      { type: "field_number", name: "border_all_sides", value: 2, min: 0 },
+      {
+        type: "field_dropdown",
+        name: "border_type",
+        options: [
+          ["Constant", "CONSTANT"],
+          ["Reflect", "REFLECT"],
+          ["Replicate", "REPLICATE"],
+          ["Wrap", "WRAP"],
+        ],
+      },
+    ],
+    output: "border_for_all",
+    style: "thresholding_style",
+    tooltip:
+      "Same border thickness on all sides - Sets a uniform border thickness for all sides of the image. Choose border type: Constant (solid black), Reflect (mirror edges), Replicate (repeat edge pixels), or Wrap (tile the image).",
+  },
+  {
+    type: "border_each_side",
+    lastDummyAlign0: "CENTRE",
+    message0: "with thickness %1 %2 %3 %4 %5 %6 %7 | border type %8",
+    args0: [
+      { type: "input_dummy", align: "CENTRE" },
+      { type: "field_number", name: "borderTop", value: 2, min: 0 },
+      { type: "input_dummy", align: "CENTRE" },
+      { type: "field_number", name: "borderLeft", value: 2, min: 0 },
+      { type: "field_number", name: "borderRight", value: 2, min: 0 },
+      { type: "input_dummy", align: "CENTRE" },
+      { type: "field_number", name: "borderBottom", value: 2, min: 0 },
+      {
+        type: "field_dropdown",
+        name: "border_type",
+        options: [
+          ["Constant", "CONSTANT"],
+          ["Reflect", "REFLECT"],
+          ["Replicate", "REPLICATE"],
+          ["Wrap", "WRAP"],
+        ],
+      },
+    ],
+    inputsInline: false,
+    output: "border_each_side",
+    style: "thresholding_style",
+    tooltip:
+      "Set border thickness for each side individually - Allows you to specify different border thicknesses for the top, left, right, and bottom sides. Choose border type: Constant (solid black), Reflect (mirror edges), Replicate (repeat edge pixels), or Wrap (tile the image).",
   },
   {
     type: "border_for_all",
