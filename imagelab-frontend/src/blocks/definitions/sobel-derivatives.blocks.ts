@@ -40,4 +40,13 @@ export const sobelDerivativesBlocks = [
     tooltip:
       "Detect edges using Scharr derivative (second order) - Applies the Scharr operator, which is a more accurate version of the Sobel operator for edge detection. The 'type' parameter specifies the direction of the derivative: 'Horizontal' detects vertical edges and 'Vertical' detects horizontal edges. The 'depth' parameter controls the depth of the output image; a value of 0 means the output will have the same depth as the source image.",
   },
+  {
+    type: "sobelderivatives_prewittoperator",
+    message0: "Apply Prewitt edge detection",
+    previousStatement: null,
+    nextStatement: null,
+    style: "sobel_derivatives_style",
+    tooltip:
+      "Detect edges using the Prewitt operator - Applies two 3x3 kernels to compute horizontal and vertical gradient magnitude. Similar to Sobel but with equal weights across all rows/columns, making it slightly simpler and faster. Colour images are converted to grayscale automatically.",
+  },
 ];
