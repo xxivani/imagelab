@@ -31,6 +31,8 @@ export default function Toolbar({ workspace }: ToolbarProps) {
     uniqueBlockTypes,
     categoryCounts,
     complexity,
+    pipelineStepCount,
+    setPipelineStepCount,
   } = usePipelineStore();
 
   const [showShareModal, setShowShareModal] = useState(false);
@@ -63,6 +65,7 @@ export default function Toolbar({ workspace }: ToolbarProps) {
       return;
     }
 
+    setPipelineStepCount(pipeline.length);
     setExecuting(true);
     setError(null);
     setTiming(null);
@@ -197,6 +200,14 @@ export default function Toolbar({ workspace }: ToolbarProps) {
                   {uniqueBlockTypes}
                 </span>
               </div>
+              {pipelineStepCount > 0 && (
+                <div className="mt-1.5 flex justify-between items-center text-gray-500 text-[10px] uppercase">
+                  <span>Pipeline Steps</span>
+                  <span className="font-bold text-gray-700 bg-gray-100 px-1.5 py-0.5 rounded">
+                    {pipelineStepCount}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         )}
