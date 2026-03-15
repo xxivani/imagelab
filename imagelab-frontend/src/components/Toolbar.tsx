@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as Blockly from "blockly";
-import { FilePlus, Download, Undo2, Redo2, Play, Loader2, Share2 } from "lucide-react";
+import { FilePlus, Download, Undo2, Redo2, Play, Loader2, Share2, Bug } from "lucide-react";
 import { usePipelineStore } from "../store/pipelineStore";
 import { executePipeline } from "../api/pipeline";
 import { extractPipeline } from "../hooks/usePipeline";
@@ -31,6 +31,9 @@ export default function Toolbar({ workspace }: ToolbarProps) {
     uniqueBlockTypes,
     categoryCounts,
     complexity,
+    isDebugMode,
+    setDebugMode,
+    setDebugFrames,
   } = usePipelineStore();
 
   const [showShareModal, setShowShareModal] = useState(false);
@@ -66,18 +69,21 @@ export default function Toolbar({ workspace }: ToolbarProps) {
     setExecuting(true);
     setError(null);
     setTiming(null);
+    setDebugFrames(null);
 
     try {
       const response = await executePipeline({
         image: originalImage,
         image_format: imageFormat,
         pipeline,
+        debug: isDebugMode,
       });
 
       setTiming(response.timings ?? null);
 
       if (response.success && response.image) {
         setProcessedImage(response.image);
+        setDebugFrames(response.debug_frames ?? null);
       } else {
         setError(response.error || "Pipeline execution failed", response.step);
       }
@@ -135,6 +141,20 @@ export default function Toolbar({ workspace }: ToolbarProps) {
           title="Share Pipeline"
         >
           <Share2 size={18} />
+        </button>
+
+        <button
+          onClick={() => setDebugMode(!isDebugMode)}
+          className={`p-1.5 rounded transition-colors ${
+            isDebugMode
+              ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
+              : "hover:bg-gray-100 text-gray-600"
+          }`}
+          title={
+            isDebugMode ? "Debug mode on — click to disable" : "Enable step-by-step debug mode"
+          }
+        >
+          <Bug size={18} />
         </button>
 
         <div className={separator} />
