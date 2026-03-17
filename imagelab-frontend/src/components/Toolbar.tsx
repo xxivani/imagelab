@@ -65,7 +65,6 @@ export default function Toolbar({ workspace }: ToolbarProps) {
       return;
     }
 
-    setPipelineStepCount(pipeline.length);
     setExecuting(true);
     setError(null);
     setTiming(null);
@@ -80,11 +79,14 @@ export default function Toolbar({ workspace }: ToolbarProps) {
       setTiming(response.timings ?? null);
 
       if (response.success && response.image) {
+        setPipelineStepCount(pipeline.length);
         setProcessedImage(response.image);
       } else {
+        setPipelineStepCount(0);
         setError(response.error || "Pipeline execution failed", response.step);
       }
     } catch (err) {
+      setPipelineStepCount(0);
       setError(err instanceof Error ? err.message : "Network error");
       setTiming(null);
     } finally {
@@ -152,10 +154,8 @@ export default function Toolbar({ workspace }: ToolbarProps) {
           {isExecuting ? "Running..." : "Run"}
         </button>
 
-        {/* Spacer to push stats to the right */}
         <div className="flex-1" />
 
-        {/* Live Statistics Display */}
         {blockCount > 0 && (
           <div className="relative group cursor-help px-2 flex items-center h-full border-l border-gray-100 ml-2">
             <div className="flex flex-col items-end leading-tight">
@@ -202,7 +202,7 @@ export default function Toolbar({ workspace }: ToolbarProps) {
               </div>
               {pipelineStepCount > 0 && (
                 <div className="mt-1.5 flex justify-between items-center text-gray-500 text-[10px] uppercase">
-                  <span>Pipeline Steps</span>
+                  <span>Last Run Steps</span>
                   <span className="font-bold text-gray-700 bg-gray-100 px-1.5 py-0.5 rounded">
                     {pipelineStepCount}
                   </span>

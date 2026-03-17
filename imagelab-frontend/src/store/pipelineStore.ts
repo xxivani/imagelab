@@ -13,14 +13,11 @@ interface PipelineState {
   selectedBlockType: string | null;
   selectedBlockTooltip: string | null;
   timings: PipelineTimings | null;
-
-  // Statistics
   blockCount: number;
   uniqueBlockTypes: number;
   categoryCounts: Record<string, number>;
   complexity: "Low" | "Medium" | "High";
   pipelineStepCount: number;
-
   setOriginalImage: (image: string, format: string) => void;
   setProcessedImage: (image: string | null) => void;
   setExecuting: (executing: boolean) => void;
@@ -71,7 +68,8 @@ export const usePipelineStore = create<PipelineState>((set) => ({
   setSelectedBlock: (type, tooltip) =>
     set({ selectedBlockType: type, selectedBlockTooltip: tooltip }),
   setTiming: (timings) => set({ timings }),
-  setPipelineStepCount: (count) => set({ pipelineStepCount: count }),
+  setPipelineStepCount: (count) =>
+    set({ pipelineStepCount: Number.isFinite(count) && count >= 0 ? count : 0 }),
   _imageResetFn: null as (() => void) | null,
   registerImageReset: (fn) => set({ _imageResetFn: fn }),
   clearImage: () => {
@@ -83,6 +81,7 @@ export const usePipelineStore = create<PipelineState>((set) => ({
       error: null,
       errorStep: null,
       timings: null,
+      pipelineStepCount: 0,
     });
   },
   updateBlockStats: (workspace) => {
