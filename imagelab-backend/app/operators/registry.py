@@ -1,5 +1,6 @@
 from app.operators.augmentation.gaussian_noise import GaussianNoise
 from app.operators.augmentation.salt_pepper_noise import SaltPepperNoise
+from app.operators.augmentation.sepia_filter import SepiaFilter
 from app.operators.base import BaseOperator
 from app.operators.basic.read_image import ReadImage
 from app.operators.basic.write_image import WriteImage
@@ -9,6 +10,7 @@ from app.operators.blurring.median_blur import MedianBlur
 from app.operators.conversions.bgr_to_hsv import BgrToHsv
 from app.operators.conversions.bgr_to_lab import BgrToLab
 from app.operators.conversions.bgr_to_ycrcb import BgrToYcrcb
+from app.operators.conversions.brightness_and_contrast import BrightnessAndContrast
 from app.operators.conversions.channel_split import ChannelSplit
 from app.operators.conversions.clahe import claheImage
 from app.operators.conversions.color_maps import ColorMaps
@@ -78,6 +80,7 @@ OPERATOR_REGISTRY: dict[str, type[BaseOperator]] = {
     "imageconvertions_bgrtoycrcb": BgrToYcrcb,
     "imageconvertions_ycrcbtobgr": YcrcbToBgr,
     "imageconvertions_invertimage": InvertImage,
+    "imageconvertions_brightnessandcontrast": BrightnessAndContrast,
     # Drawing
     "drawingoperations_drawline": DrawLine,
     "drawingoperations_drawcircle": DrawCircle,
@@ -101,6 +104,7 @@ OPERATOR_REGISTRY: dict[str, type[BaseOperator]] = {
     # Augmentation
     "augmentation_gaussiannoise": GaussianNoise,
     "augmentation_saltpeppernoise": SaltPepperNoise,
+    "augmentation_sepiafilter": SepiaFilter,
     "filtering_gaborfilter": GaborFilter,
     "filtering_contourdetection": ContourDetection,
     # Thresholding
